@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xz.mapper.MerchandiseMapper">
+
+
+    <insert id="addMerchandise" parameterType="com.xz.pojo.Merchandise">
+        insert into j2ee.merchandise values (#{mer.merchandiseId},#{mer.name},#{mer.price},
+        #{mer.manufactureId},#{mer.date},#{mer.inventory});
+    </insert>
+
+    <select id="select_allMerchandise" resultType="com.xz.pojo.Merchandise">
+        select merchandise_id, name, price, manufacturer as manufactureID, date as Date, inventory from j2ee.merchandise;
+    </select>
+
+    <delete id="delete_AMerchandise" parameterType="int">
+        delete from j2ee.merchandise where merchandise_id = #{merchandiseId}
+    </delete>
+    <update id="update_AMerchandise" parameterType="com.xz.pojo.Merchandise">
+        update j2ee.merchandise
+        <set>
+            <if test="updateMerchandise.price != null and updateMerchandise.price != ''">
+                price = #{updateMerchandise.price},
+            </if>
+
+            <if test="updateMerchandise.merchandiseId != null and updateMerchandise.merchandiseId != ''">
+                manufacturer = #{updateMerchandise.merchandiseId},
+            </if>
+
+            <if test="updateMerchandise.inventory != null  and updateMerchandise.inventory != ''">
+                inventory = #{updateMerchandise.inventory}
+            </if>
+        </set>
+        <where>
+            merchandise_id = #{updateMerchandise.merchandiseId}
+        </where>
+    </update>
+
+    <select id="getAMerchandise" parameterType="com.xz.pojo.Merchandise" resultType="com.xz.pojo.Merchandise">
+        select * from merchandise where merchandise_id = #{getMerchandise.merchandiseId}
+    </select>
+</mapper>

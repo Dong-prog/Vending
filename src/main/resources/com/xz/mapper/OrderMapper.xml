@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xz.mapper.OrderMapper">
+
+
+    <insert id="addOrder" parameterType="com.xz.pojo.Order">
+        insert into j2ee.order(item_id, merchandise_id, machine_id, o_price, o_num, date) values
+        (#{o.oId},#{o.merchandiseId},#{o.machineId},#{o.oPrice},#{o.oNum},#{o.date})
+    </insert>
+
+    <select id="select_allOrder" resultType="com.xz.pojo.Order">
+        select  o_id, item_id, merchandise_id, machine_id, o_price, o_num, date as Date from j2ee.order;
+    </select>
+
+    <delete id="delete_AnOrder" parameterType="int">
+        delete from j2ee.order where o_id = #{oId}
+    </delete>
+
+    <select id="getTop3" resultType="com.xz.pojo.Top.MerchandiseTop3">
+        select merchandise.merchandise_id, merchandise.name, merchandise.manufacturer, SUM(order.o_price) as sumPrice
+        from merchandise JOIN j2ee.order on merchandise.merchandise_id = order.merchandise_id
+        GROUP BY merchandise.merchandise_id ORDER BY sumPrice DESC
+    </select>
+
+    <select id="getMerchandiseHeat" resultType="com.xz.pojo.Top.MerchandiseSoldNumTop">
+        select  merchandise.name, SUM(order.o_num) as value
+        from merchandise JOIN j2ee.order on merchandise.merchandise_id = order.merchandise_id
+        GROUP BY merchandise.merchandise_id ORDER BY value DESC
+    </select>
+
+    <select id="getDaySoldSumTop" resultType="com.xz.pojo.Top.DaySoldSumTop">
+        select   SUM(order.o_price) as sumPrice, DATE_FORMAT(order.date,'%Y-%m-%d') as Date
+        from j2ee.order GROUP BY DATE_FORMAT(order.date,'%Y-%m-%d') ORDER BY Date;
+    </select>
+</mapper>

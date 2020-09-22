@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xz.mapper.MachineMapper">
+
+    <insert id="addMachine" parameterType="com.xz.pojo.Machine">
+        insert into j2ee.machine values (#{m.machineId},#{m.name},#{m.type},#{m.screen},#{m.possessor},#{m.itemNum},
+        #{m.capacity},#{m.gps},#{m.addr},#{m.distriDate},#{m.endDate},#{m.state})
+    </insert>
+
+    <select id="select_allMachine" resultType="com.xz.pojo.Machine">
+        select machine_id, name, type, screen, possessor, item_num, capacity, gps, addr, distridate as distriDate,
+         enddate as endDate, state from j2ee.machine;
+    </select>
+
+    <delete id="delete_AMachine" parameterType="int">
+        delete from j2ee.machine where machine_id = #{machineId}
+    </delete>
+
+    <update id="update_AMachine" parameterType="com.xz.pojo.Machine">
+        update j2ee.machine
+        <set>
+            <if test="updateMachine.name != null and updateMachine.name != ''">
+                name = #{updateMachine.name},
+            </if>
+
+            <if test="updateMachine.possessor != null  and updateMachine.possessor != ''">
+                possessor = #{updateMachine.possessor},
+            </if>
+
+            <if test="updateMachine.gps != null and updateMachine.gps != ''">
+                gps = #{updateMachine.gps},
+            </if>
+
+            <if test="updateMachine.addr != null and updateMachine.addr != ''">
+                addr = #{updateMachine.addr},
+            </if>
+
+            <if test="updateMachine.state != null ">
+                state = #{updateMachine.state}
+            </if>
+        </set>
+        <where>
+            machine_id = #{updateMachine.machineId}
+        </where>
+    </update>
+
+    <select id="getAMachine" parameterType="com.xz.pojo.Machine" resultType="com.xz.pojo.Machine">
+        select * from j2ee.machine where machine_id = #{getMachine.machineId}
+    </select>
+
+    <select id="selectAMachine" parameterType="com.xz.pojo.User" resultType="com.xz.pojo.Machine">
+        select machine_id, name, type, screen, possessor, item_num, capacity, gps, addr, distridate as distriDate,
+        enddate as endDate, state from j2ee.machine where possessor=#{user.username};
+    </select>
+
+    <select id="select_DamageMachine" resultType="com.xz.pojo.Machine">
+        select * from j2ee.machine where state = 0
+    </select>
+
+    <select id="select_MachineTop" resultType="com.xz.pojo.Top.MachineTop">
+        SELECT m_merchandise.machine_id, machine.name, machine.type, machine.possessor, SUM(m_merchandise.sold_sum) as sumPrice
+        from machine NATURAL JOIN m_merchandise GROUP BY machine_id ORDER BY sumPrice DESC;
+    </select>
+</mapper>
